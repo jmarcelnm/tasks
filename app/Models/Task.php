@@ -7,9 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
-    /** @use HasFactory<\Database\Factories\TaskFactory> */
-    use HasFactory;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -20,4 +17,17 @@ class Task extends Model
         'description',
         'completed'
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->created_at = now();
+        });
+
+        static::updating(function ($model) {
+            $model->updated_at = now();
+        });
+    }
 }

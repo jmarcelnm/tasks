@@ -6,14 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
     /**
      * Display a listing of the resource.
+     * 
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         $query = Task::query();
 
@@ -47,8 +51,11 @@ class TaskController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * 
+     * @param StoreTaskRequest $request
+     * @return JsonResponse
      */
-    public function store(StoreTaskRequest $request)
+    public function store(StoreTaskRequest $request): JsonResponse
     {
         $task = Task::create($request->validated());
 
@@ -60,8 +67,11 @@ class TaskController extends Controller
 
     /**
      * Display the specified resource.
+     * 
+     * @param int|string $id
+     * @return JsonResponse
      */
-    public function show($id)
+    public function show($id): JsonResponse
     {
         $task = Task::findOrFail($id);
 
@@ -73,6 +83,8 @@ class TaskController extends Controller
 
     /**
      * Show the form for editing the specified resource.
+     * 
+     * @param int|string $id
      */
     public function edit($id)
     {
@@ -83,8 +95,12 @@ class TaskController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * 
+     * @param UpdateTaskRequest $request
+     * @param int|string $id
+     * @return JsonResponse
      */
-    public function update(UpdateTaskRequest $request, $id)
+    public function update(UpdateTaskRequest $request, $id): JsonResponse
     {
         $task = Task::findOrFail($id);
 
@@ -102,8 +118,11 @@ class TaskController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     * 
+     * @param int|string $id
+     * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
         $task = Task::findOrFail($id);
 

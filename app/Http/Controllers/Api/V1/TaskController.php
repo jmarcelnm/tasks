@@ -19,7 +19,7 @@ class TaskController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $query = Task::query();
+        $query = Task::where('user_id', auth()->user()->id);
 
         if ($request->has('name')) {
             $query->where('name', 'like', '%' . $request->input('name') . '%');
@@ -57,7 +57,7 @@ class TaskController extends Controller
      */
     public function store(StoreTaskRequest $request): JsonResponse
     {
-        $task = Task::create($request->validated());
+        $task = $request->user()->tasks()->create($request->validated());
 
         return response()->json([
             'message' => 'Task created successfully',
@@ -73,7 +73,7 @@ class TaskController extends Controller
      */
     public function show($id): JsonResponse
     {
-        $task = Task::findOrFail($id);
+        $task = Task::where('user_id', auth()->user()->id)->findOrFail($id);
 
         return response()->json([
             'message' => 'Task retrieved successfully',
@@ -88,7 +88,7 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        $task = Task::findOrFail($id);
+        $task = Task::where('user_id', auth()->user()->id)->findOrFail($id);
 
         return view('tasks.edit', compact('task'));
     }
@@ -102,7 +102,7 @@ class TaskController extends Controller
      */
     public function update(UpdateTaskRequest $request, $id): JsonResponse
     {
-        $task = Task::findOrFail($id);
+        $task = Task::where('user_id', auth()->user()->id)->findOrFail($id);
 
         if ($task->update($request->validated())) {
             return response()->json([
@@ -124,7 +124,7 @@ class TaskController extends Controller
      */
     public function destroy($id): JsonResponse
     {
-        $task = Task::findOrFail($id);
+        $task = Task::where('user_id', auth()->user()->id)->findOrFail($id);
 
         if ($task->delete()) {
             return response()->json([

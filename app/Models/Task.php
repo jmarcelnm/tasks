@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
+    /** @use HasFactory<\Database\Factories\UserFactory> */
+    use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *

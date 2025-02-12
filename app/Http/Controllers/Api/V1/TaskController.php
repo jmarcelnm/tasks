@@ -8,6 +8,8 @@ use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class TaskController extends Controller
 {
@@ -19,7 +21,9 @@ class TaskController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $query = Task::where('user_id', auth()->user()->id);
+        Gate::authorize('viewAny', Task::class);
+
+        $query = Task::where('user_id', Auth::id());
 
         if ($request->has('name')) {
             $query->where('name', 'like', '%' . $request->input('name') . '%');
@@ -57,6 +61,12 @@ class TaskController extends Controller
      */
     public function store(StoreTaskRequest $request): JsonResponse
     {
+        if (request()->user()->cannot('create', Task::class)) {
+            return response()->json([
+                'message' => 'You are not authorized to create this task'
+            ], 403);
+        }
+
         $task = $request->user()->tasks()->create($request->validated());
 
         return response()->json([
@@ -73,7 +83,9 @@ class TaskController extends Controller
      */
     public function show($id): JsonResponse
     {
-        $task = Task::where('user_id', auth()->user()->id)->findOrFail($id);
+        Gate::authorize('view', Task::class);
+
+        $task = Task::where('user_id', Auth::id())->findOrFail($id);
 
         return response()->json([
             'message' => 'Task retrieved successfully',
@@ -88,7 +100,7 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        $task = Task::where('user_id', auth()->user()->id)->findOrFail($id);
+        $task = Task::where('user_id', Auth::id())->findOrFail($id);
 
         return view('tasks.edit', compact('task'));
     }
@@ -102,7 +114,13 @@ class TaskController extends Controller
      */
     public function update(UpdateTaskRequest $request, $id): JsonResponse
     {
-        $task = Task::where('user_id', auth()->user()->id)->findOrFail($id);
+        $task = Task::where('user_id', Auth::id())->findOrFail($id);
+
+        if ($request->user()->cannot('update', $task)) {
+            return response()->json([
+                'message' => 'You are not authorized to update this task'
+            ], 403);
+        }
 
         if ($task->update($request->validated())) {
             return response()->json([
@@ -124,7 +142,13 @@ class TaskController extends Controller
      */
     public function destroy($id): JsonResponse
     {
-        $task = Task::where('user_id', auth()->user()->id)->findOrFail($id);
+        $task = Task::where('user_id', Auth::id())->findOrFail($id);
+
+        if (request()->user()->cannot('delete', $task)) {
+            return response()->json([
+                'message' => 'You are not authorized to delete this task'
+            ], 403);
+        }
 
         if ($task->delete()) {
             return response()->json([

@@ -3,6 +3,7 @@
 use Laravel\Sanctum\Sanctum;
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Stateful Domains
@@ -13,6 +14,7 @@ return [
     | and production domains which access your API via a frontend SPA.
     |
     */
+
     'stateful' => explode(
         ',',
         env(
@@ -24,6 +26,7 @@ return [
             )
         )
     ),
+
     /*
     |--------------------------------------------------------------------------
     | Sanctum Guards
@@ -35,7 +38,9 @@ return [
     | token that's present on an incoming request for authentication.
     |
     */
+
     'guard' => ['web'],
+
     /*
     |--------------------------------------------------------------------------
     | Expiration Minutes
@@ -46,7 +51,9 @@ return [
     | "expires_at" attribute, but first-party sessions are not affected.
     |
     */
+
     'expiration' => null,
+
     /*
     |--------------------------------------------------------------------------
     | Token Prefix
@@ -59,7 +66,9 @@ return [
     | See: https://docs.github.com/en/code-security/secret-scanning/about-secret-scanning
     |
     */
+
     'token_prefix' => env('SANCTUM_TOKEN_PREFIX', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Sanctum Middleware
@@ -70,9 +79,11 @@ return [
     | request. You may change the middleware listed below as required.
     |
     */
+
     'middleware' => [
         'authenticate_session' => Laravel\Sanctum\Http\Middleware\AuthenticateSession::class,
         'encrypt_cookies' => Illuminate\Cookie\Middleware\EncryptCookies::class,
-        'validate_csrf_token' => Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+        'validate_csrf_token' => Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class
     ]
+
 ];
